@@ -1,0 +1,10 @@
+pyproject.toml
+setup.cfg
+dist/
+src/pypelyne/_temp/
+src/pypelyne/__pycache__/
+src/pypelyne/transform/__pycache__/
+src/pypelyne/drive/__pycache__/
+doc/
+tests/local_*
+.DS_Store
