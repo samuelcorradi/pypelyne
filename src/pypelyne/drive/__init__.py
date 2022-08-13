@@ -11,16 +11,22 @@ class Base(ABC):
         self.validate = None
         self._conn = self._load_conn()
 
+    def __del__(self):
+        """
+        When destroying it must be disconnected.
+        """
+        del self._dataset
+        del self._conn
+
     def get_name(self):
         return self._name
 
     @classmethod
     def batch(cls, conn:dict, filter)->list:
         """
-        Aplica um filtro no nome das
-        fontes de dados e retorna
-        apenas aquelas que casam com
-        o filtro.
+        Applies a filter to the name of
+        data sources and returns only
+        those that match the filter.
         """
         batchlst = cls._batch(conn, filter)
         return batchlst
