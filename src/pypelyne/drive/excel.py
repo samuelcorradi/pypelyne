@@ -38,7 +38,8 @@ class Drive(Base):
         , filename=self._params['filename']
         , sheet=self._name
         , encode=self._params.get('encode', 'utf-8')
-        , has_header=self._params.get('has_header', True))
+        , has_header=self._params.get('has_header', True)
+        , range=self._params.get('range', None))
         return conn
 
     def save_dataset(self, dataset:Dataset):
