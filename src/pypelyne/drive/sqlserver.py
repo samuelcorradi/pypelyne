@@ -1,5 +1,4 @@
 import re
-import sys
 from . import Base
 from pyodbc import ProgrammingError, DataError
 from storagy.conn.sqlserver import Conn as SQLConn

@@ -1,8 +1,5 @@
-import sys
 from . import Base
-sys.path.insert(0, '/Users/samuelcorradi/Desktop/programas_python/memdb/src')
 from memdb.dataset import Dataset
-sys.path.insert(0, '/Users/samuelcorradi/Desktop/programas_python/servicepy/src')
 from servicepy import Conn
 from servicepy import Table
 
