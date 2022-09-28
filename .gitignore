@@ -1,7 +1,8 @@
 pyproject.toml
+src/pypelyne.egg-info/
 setup.cfg
 dist/
-src/pypelyne/_temp/
+_temp/
 src/pypelyne/__pycache__/
 src/pypelyne/transform/__pycache__/
 src/pypelyne/drive/__pycache__/
