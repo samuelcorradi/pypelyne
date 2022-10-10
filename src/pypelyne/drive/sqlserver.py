@@ -1,5 +1,5 @@
 import re
-from . import Base
+from pypelyne.drive import Base
 from pyodbc import ProgrammingError, DataError
 from storagy.conn.sqlserver import Conn as SQLConn
 from memdb.dataset import Dataset
@@ -28,7 +28,7 @@ class Drive(Base):
         raise Exception("Metodo ainda nao implementado.")
 
     def __del__(self):
-        self._conn.disconnect()
+        self._conn = None
 
     def _adjust_size(self, dataset:Dataset):
         dest_field_size = self.field_size()
@@ -43,10 +43,10 @@ class Drive(Base):
                 self._conn.resize(fieldname=k, size=dset_field_size[k])
 
     def _load_conn(self):
-        conn = SQLConn(host=self._params['host']
-            , db=self._params['db']
-            , user=self._params['user']
-            , pwd=self._params['pwd']
+        conn = SQLConn(host=self._kwargs['host']
+            , db=self._kwargs['db']
+            , user=self._kwargs['user']
+            , pwd=self._kwargs['pwd']
             , tbname=self._name)
         return conn
 
@@ -61,35 +61,24 @@ class Drive(Base):
             self._dataset.insert(list(r))
         self._conn.close()
         return self._dataset
-
-    def save_dataset2(self, dataset:Dataset):
-        field_list = dataset.get_schema().get_names()
-        self._conn.open()
-        try:
-            self._conn.bulk_insert(tablename=self._name, field_list=field_list, data=dataset._data)
-        except ProgrammingError as e:
-            print(e)
-            m = re.findall('Invalid column name \'([a-zA-Z0-9\_]+)\'', str(e))
-            if '42S22' in str(e):
-                raise NoDestFieldError(fieldname=m[0])
-            elif '22001' in str(e):
-                pass
-                # raise TruncateDatabaseFieldError()
-        self._conn.commit()
-        self._conn.close()
     
     def field_size(self)->dict:
         """
         Lista de campos e tamanhos
         """
+        print(self._conn)
         return self._conn.field_size()
 
     def save_dataset(self, dataset:Dataset):
         self._adjust_size(dataset) # ajusta o destino ao tamanho da fonte
         dest_field_size = self.field_size()
         dset_field_size = dataset.get_fields_size()
-        field_list = dset_field_size.keys()
+        field_list = dataset.columns()
         commom_keys = list(set(dest_field_size.keys()) & set(field_list))
+        print("Lista de campos na origem: {}".format(str(dest_field_size)))
+        print(dset_field_size)
+        print(field_list)
+        print("Commomkeys: {}".format(str(commom_keys)))
         self._conn.open()
         for _row in dataset._data:
             row = dataset._parse_row(_row)
@@ -99,7 +88,6 @@ class Drive(Base):
                 self._conn.insert(data=data)
             except ProgrammingError as e:
                 msg = str(e)
-                print(e)
                 m = re.findall('Invalid column name \'([a-zA-Z0-9\_]+)\'', msg)
                 if '42S22' in msg:
                     try:
@@ -108,10 +96,6 @@ class Drive(Base):
                         raise NoDestFieldError(fieldname=m[0])
             except DataError as e:
                 msg = str(e)
-                print(ndata)
-                print(data)
-                print(msg)
-                print(dest_field_size, dset_field_size)
                 if 'String or binary data would be truncated' in msg:
                     flist = []
                     for fname, size in dest_field_size.items():
@@ -121,5 +105,10 @@ class Drive(Base):
                             and size<len(data[fname]):
                             flist.append([fname, size, len(data[fname])])
                     raise TruncateDatabaseFieldError(flist=flist)
+            except Exception as e:
+                if hasattr(e, 'message'):
+                    print(e.message)
+                else:
+                    print(e)
         self._conn.commit()
         self._conn.close()

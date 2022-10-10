@@ -22,6 +22,7 @@ class Drive(Base):
             conn = {'path':conn['path'], 'mode':'r', 'encode':'utf-8'}
             drv = Drive(name=f, conn=conn)
             batchlst.append(drv)
+        return batchlst
 
     def field_size(self)->dict:
         # implementar para pegar a quantidade

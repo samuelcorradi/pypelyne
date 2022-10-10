@@ -76,7 +76,7 @@ class Transform(Super):
         """
         """
         start, end = self.get_merge_pos()
-        print(start, end)
+        #print(start, end)
         if start==-1 or end==-1:
             self._dataset.truncate()
             return

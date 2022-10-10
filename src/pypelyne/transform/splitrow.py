@@ -42,6 +42,9 @@ class Transform(Super):
                 row = row[:cutpos]
                 current[col_pos+1:col_pos+1] = row + [None]*(cutpos-len(row))
                 data.insert(current)
-            line = self._dataset.next()
+            try:
+                line = self._dataset.next()
+            except:
+                break
         self._dataset = data
 
