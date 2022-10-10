@@ -1,15 +1,27 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from memdb.dataset import Dataset
+from storagy.exceptions import ConnectionFail
 
 class Base(ABC):
 
-    def __init__(self, name:str, conn:dict):
+    def __init__(self, name:str, **kwargs):
         self._name = name
-        self._params = conn
+        self._kwargs = kwargs
         self._dataset = None
         self.validate = None
-        self._conn = self._load_conn()
+        self._conn = None
+        try:
+            self._conn = self._load_conn()
+        except ConnectionFail as e:
+            print(e)
+        except KeyError as e:
+            print("{}: Parameter {} required to connect not found.".format(type(self), e))
+        except Exception as e:
+            if hasattr(e, 'message'):
+                print(e.message)
+            else:
+                print(e)
 
     def __del__(self):
         """
