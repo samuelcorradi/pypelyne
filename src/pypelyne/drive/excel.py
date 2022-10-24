@@ -30,16 +30,16 @@ class Drive(Base):
                 # , sheet=self._name
                 , 'encode':conn.get('encode', 'utf-8')
                 , 'has_header':conn.get('has_header', True)}
-            drv = Drive(name=f, conn=conn)
+            drv = Drive(name=f, **conn)
             batchlst.append(drv)
 
     def _load_conn(self):
-        conn = ExcelConn(path=self._params['path']
-        , filename=self._params['filename']
+        conn = ExcelConn(path=self._kwargs['path']
+        , filename=self._kwargs['filename']
         , sheet=self._name
-        , encode=self._params.get('encode', 'utf-8')
-        , has_header=self._params.get('has_header', True)
-        , range=self._params.get('range', None))
+        , encode=self._kwargs.get('encode', 'utf-8')
+        , has_header=self._kwargs.get('has_header', True)
+        , range=self._kwargs.get('range', None))
         return conn
 
     def save_dataset(self, dataset:Dataset):
