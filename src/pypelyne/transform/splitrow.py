@@ -19,6 +19,8 @@ class Transform(Super):
     def process(self):
         """
         """
+        if self._dataset.is_empty():
+            return
         ncols = self._dataset.get_schema().len()
         col_pos = self._dataset.get_schema().get_field_pos(self._col)
         self._dataset.rewind()
