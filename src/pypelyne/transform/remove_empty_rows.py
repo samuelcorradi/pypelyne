@@ -7,16 +7,8 @@ class Transform(Super):
         """
         if self._dataset.is_empty():
             return
-        line = self._dataset.first() # le uma linha
-        while line:
-            if not ''.join(line).strip():
-                self._dataset.current_delete()
-                try:
-                    line = self._dataset.current()
-                except:
-                    break
-                continue
-            try:
-                line = self._dataset.next()
-            except:
-                break
+        ds = self._dataset.copy(copy_data=False)
+        for _, row in enumerate(self._dataset):
+            if ''.join(row).strip():
+                ds._data.append(row)
+        self._dataset = ds

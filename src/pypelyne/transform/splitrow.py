@@ -30,8 +30,9 @@ class Transform(Super):
             n_col_pos = col_pos
             for row in csv.reader([line[col_pos]], delimiter=self._delimiter, quotechar=self._quotechar):
                 for c in row:
-                    if self._has_header is True:
-                        data.get_schema().add_field(c.strip(), col_ref=n_col_pos)
+                    col_name = c.strip()
+                    if self._has_header and col_name:
+                        data.get_schema().add_field(col_name, col_ref=n_col_pos)
                     else:
                         data.get_schema().add_field(col_ref=n_col_pos)
                     n_col_pos += 1

@@ -20,13 +20,11 @@ class Transform(Super):
         Encontra em qual posicao no arquivo a
         primeira linha estah.
         """
-        line = self._dataset.first() # le a primeira linha
-        while self._dataset.get_index()<self._dataset.len():
-            line = ''.join(line)
+        for i, row in enumerate(self._dataset):
+            line = ''.join(row)
             if self._is_first_line(line):
-                return self._dataset.get_index()
-            line = self._dataset.next()
-        return -1 # 0
+                return i
+        return -1
 
     def find_last_pos(self)->int:
         """
@@ -76,7 +74,6 @@ class Transform(Super):
         """
         """
         start, end = self.get_merge_pos()
-        #print(start, end)
         if start==-1 or end==-1:
             self._dataset.truncate()
             return
