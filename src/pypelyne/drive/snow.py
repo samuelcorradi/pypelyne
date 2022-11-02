@@ -23,13 +23,13 @@ class Drive(Base):
         raise Exception("Metodo ainda nao implementado.")
 
     def _load_conn(self):
-        conn = Conn(domain=self._params['company']
-            , user=self._params['user']
-            , pwd=self._params['pwd']
-            , buffer=self._params.get('buffer', 10000))
+        conn = Conn(domain=self._kwargs['company']
+            , user=self._kwargs['user']
+            , pwd=self._kwargs['pwd']
+            , buffer=self._kwargs.get('buffer', 10000))
         tbl = Table(conn=conn
             , tablename=self._name
-            , display_value=self._params.get('display_value', []))
+            , display_value=self._kwargs.get('display_value', []))
         return tbl
 
     def field_size(self)->dict:
@@ -47,11 +47,8 @@ class Drive(Base):
         """
         self._dataset = Dataset()
         field_list = self._conn.field_list()
-        # print(field_list)
         for f in field_list:
             self._dataset.get_schema().add_field(name=f)
-        #limit=self._params.get('limit', 0)
-        #print(limit)
         data = self._conn.select(where=filter, orderby=['sys_updated_on']) # limit=limit,
         for r in data:
             row = []
