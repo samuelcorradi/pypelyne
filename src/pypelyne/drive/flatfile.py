@@ -30,10 +30,10 @@ class Drive(Base):
         pass
 
     def _load_conn(self):
-        conn = FlatFileConn(path=self._params['path']
+        conn = FlatFileConn(path=self._kwargs['path']
             , filename=self._name
-            , mode=self._params.get('mode', 'r')
-            , encode=self._params.get('encode', 'utf-8'))
+            , mode=self._kwargs.get('mode', 'r')
+            , encode=self._kwargs.get('encode', 'utf-8'))
         return conn
 
     def load_dataset(self, filter=[]):
