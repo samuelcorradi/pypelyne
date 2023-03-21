@@ -4,11 +4,13 @@ class Transform(Super):
 
     def __init__(self
         , first_line_part:str=""
-        , last_line_part:str=""):
+        , last_line_part:str=""
+        , jump_first_name:bool=False):
         """
         """
         self._first_line_part = first_line_part
         self._last_line_part = last_line_part
+        self._jump_first_line = jump_first_name
 
     def is_invalid_pos(self, start:int, end:int)->bool:
         """
@@ -78,4 +80,6 @@ class Transform(Super):
             self._dataset.truncate()
             return
         self._dataset.rewind()
+        if self._jump_first_line:
+            start += 1
         self._dataset.cut(start, end)
